@@ -1,6 +1,7 @@
 
 from zipfile import ZipFile
 import io
+import datetime
 
 from lxml import etree
 import requests
@@ -8,8 +9,6 @@ import requests
 from django.core.management.base import BaseCommand
 
 from pricecheck.models import Item, Price
-
-import datetime, random
 
 
 class Command(BaseCommand):
@@ -22,6 +21,7 @@ class Command(BaseCommand):
         with ZipFile(file, 'r') as z:
             f = z.namelist()[0]
             xml = z.read(f)
+
         tree = etree.fromstring(xml)
         offers = tree.xpath("//offers")[0]
         for offer in offers:
@@ -33,7 +33,7 @@ class Command(BaseCommand):
             # Создаём книгу, если она не существует
             # https://docs.djangoproject.com/en/stable/ref/models/querysets/#get-or-create
 
-            price = float(offer.find("price").text) + 10
+            price = float(offer.find("price").text)
             _, created = Price.objects.get_or_create(item=item,
-                                                     date=datetime.date.today()-datetime.timedelta(days=2), defaults={"price": price})
+                                                     date=datetime.date.today(), defaults={"price": price})
             # Создаём цену, если она ещё не была создана

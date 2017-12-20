@@ -6,44 +6,47 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-  <div>{{ item.link }}</div>
+<div><b>{{ item.name }}</b> - история изменения цены за последнюю неделю.
+      <a href="{{ item.link }}">Купить</a>.
+      Наведите на интересующий день, чтобы узнать цену.</div>
   <div id="chart_div"></div>
   <script>
-google.charts.load('current', {packages: ['corechart', 'line'], language: 'ru'});
-google.charts.setOnLoadCallback(drawLineColors);
+    google.charts.load('current', {packages: ['corechart', 'line'], language: 'ru'});
+    google.charts.setOnLoadCallback(drawLineColors);
 
-var oneWeekAgo = new Date();
-oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    var oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-function drawLineColors() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('date', 'X');
-    data.addColumn('number', 'Цена');
+    function drawLineColors() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'X');
+        data.addColumn('number', 'Цена');
 
-    data.addRows(
-        {{ price|safe }}
-    );
+        data.addRows(
+            {{ price|safe }}
+        );
 
-    var options = {
-        hAxis: {
-            title: 'Дата',
-            minValue: oneWeekAgo,
-            gridlines: {
-                count: 6,
-                color: "#554"
-            }
-        },
-        vAxis: {
-            title: 'Цена',
-            format: '0'
-        },
-        colors: ['#a52714'],
-        pointSize: 5
-    };
+        var options = {
+            hAxis: {
+                title: 'Дата',
+                minValue: oneWeekAgo,
+                maxValue: new Date(),
+                gridlines: {
+                    count: 6,
+                    color: "#554"
+                }
+            },
+            vAxis: {
+                title: 'Цена',
+                format: '0'
+            },
+            colors: ['#a52714'],
+            pointSize: 5
+        };
 
-    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-    chart.draw(data, options);
-}
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
 </script>
 
 </body>

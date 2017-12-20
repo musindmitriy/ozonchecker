@@ -1,13 +1,17 @@
-import datetime, json
+import datetime
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 
 from .models import Item, Price
 
 
-def list():
-    pass
+def list(request, page=1):
+    items = Item.objects.all()
+    paginator = Paginator(items, 25)
+    items = paginator.get_page(page)
+    return render(request, "pricecheck/list.html", {"items": items})
 
 
 def main(request, id):
