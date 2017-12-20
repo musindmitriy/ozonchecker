@@ -9,26 +9,36 @@
   <div>{{ item.link }}</div>
   <div id="chart_div"></div>
   <script>
-google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.load('current', {packages: ['corechart', 'line'], language: 'ru'});
 google.charts.setOnLoadCallback(drawLineColors);
+
+var oneWeekAgo = new Date();
+oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
 function drawLineColors() {
     var data = new google.visualization.DataTable();
     data.addColumn('date', 'X');
-    data.addColumn('number', 'Price');
+    data.addColumn('number', 'Цена');
 
     data.addRows(
-        {{ price }}
+        {{ price|safe }}
     );
 
     var options = {
         hAxis: {
-            title: 'Дата'
+            title: 'Дата',
+            minValue: oneWeekAgo,
+            gridlines: {
+                count: 6,
+                color: "#554"
+            }
         },
         vAxis: {
-            title: 'Цена'
+            title: 'Цена',
+            format: '0'
         },
-        colors: ['#a52714']
+        colors: ['#a52714'],
+        pointSize: 5
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
