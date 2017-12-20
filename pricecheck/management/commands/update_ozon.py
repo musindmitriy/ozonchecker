@@ -9,6 +9,8 @@ from django.core.management.base import BaseCommand
 
 from pricecheck.models import Item, Price
 
+import datetime, random
+
 
 class Command(BaseCommand):
     help = 'Запрашивает цены с ozon.ru'
@@ -22,7 +24,7 @@ class Command(BaseCommand):
             xml = z.read(f)
         tree = etree.fromstring(xml)
         offers = tree.xpath("//offers")[0]
-        for offer in offers:  # А в цикле не печатаем, как в предыдущей статье, а сохраняем в базе
+        for offer in offers:
             name = offer.find("name").text
             url = offer.find("url").text[:-len("?from=prt_xml_facet")]
             # Все ссылки заканчиваются на ?from=prt_xml_facet а нам это не нужно
@@ -31,6 +33,7 @@ class Command(BaseCommand):
             # Создаём книгу, если она не существует
             # https://docs.djangoproject.com/en/stable/ref/models/querysets/#get-or-create
 
-            price = float(offer.find("price").text)
-            _, created = Price.objects.get_or_create(item=item, defaults={"price": price})
+            price = float(offer.find("price").text) + 10
+            _, created = Price.objects.get_or_create(item=item,
+                                                     date=datetime.date.today()-datetime.timedelta(days=2), defaults={"price": price})
             # Создаём цену, если она ещё не была создана

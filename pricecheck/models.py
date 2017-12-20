@@ -15,7 +15,7 @@ class Item(models.Model):
 class Price(models.Model):
 
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    date = models.DateField(verbose_name="Дата снятия цены", auto_now_add=True)
+    date = models.DateField(verbose_name="Дата снятия цены")
     price = models.PositiveIntegerField(verbose_name="Цена в рублях")  # Опустим копейки
 
     class Meta:

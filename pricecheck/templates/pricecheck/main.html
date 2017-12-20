@@ -3,8 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ item.name }}</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-{{ item.link }}
+  <div>{{ item.link }}</div>
+  <div id="chart_div"></div>
+  <script>
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawLineColors);
+
+function drawLineColors() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', 'X');
+    data.addColumn('number', 'Price');
+
+    data.addRows(
+        {{ price }}
+    );
+
+    var options = {
+        hAxis: {
+            title: 'Дата'
+        },
+        vAxis: {
+            title: 'Цена'
+        },
+        colors: ['#a52714']
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+}
+</script>
+
 </body>
 </html>

@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -11,4 +12,8 @@ def list():
 
 def main(request, id):
     item = get_object_or_404(Item, pk=id)
-    return render(request, "pricecheck/main.html", {"item": item})
+    start_from = datetime.date.today() - datetime.timedelta(days=7)
+    price_last = Price.objects.filter(item=item,
+                                      date__gte=start_from).order_by("date")
+    return render(request, "pricecheck/main.html",
+                  {"item": item, "price": price_last})
